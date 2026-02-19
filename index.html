@@ -181,7 +181,12 @@
         }
 
         function do_hash(args) {
-            const out = hash(...args);
+            var out;
+            try {
+                out = hash(...args);
+            } catch (err) {
+                out = err.message;
+            }
             const parts = out.split('\n');
             if (parts.length > 1) {
                 SetNote.textContent = parts[0];
@@ -296,5 +301,6 @@
     <textarea id="result" hidden></textarea>
 
 </body>
+
 
 </html>
