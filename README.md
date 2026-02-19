@@ -7,7 +7,7 @@ Suppose you have a system of generating easy-to-remember passwords, like e.g. th
 # Web version
 There is now a web version [here](https://anonymous1212144.github.io/ArgonHash/). It have some difference with the executable. Here are some notes:
 - Parallelism does not work in most browsers
-- You cannot upload large files, also trying to generate multiple in one go also throws memory error
+- You cannot upload large files, also trying to generate multiple in one go sometimes also throws memory error
 - There is a "maximum output length" field which if you enter any number >0 it will only output that many characters in the "results" box
 
 # Usage instructions
