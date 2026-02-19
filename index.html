@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Quiz</title>
+    <style>
+        body {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 50px;
+        }
+
+        p {
+            color: #f00;
+            margin: 0;
+        }
+
+        h3 {
+            margin-top: 0.25em;
+            margin-bottom: 0.25em;
+        }
+    </style>
+</head>
+
+<body>
+    <h1><a href="https://github.com/Anonymous1212144/ArgonHash" target="_blank">Argonhash</a> Web</h1>
+
+    <h3 title="hello world">Message</h3>
+    <label>
+        <input type="radio" name="message" onchange="switchMode(MessageText, MessageFile)" checked>Text
+    </label>
+    <label>
+        <input type="radio" name="message" onchange="switchMode(MessageFile, MessageText)">File
+    </label>
+    <br>
+    <textarea id="MessageText">password</textarea>
+    <input type="file" id="MessageFile" hidden>
+    <p id="MessageNote" hidden>Invalid input</p>
+    <br>
+
+    <h3>Nonce</h3>
+    <label>
+        <input type="radio" name="nonce" onchange="switchMode(NonceText, NonceFile)" checked>Text
+    </label>
+    <label>
+        <input type="radio" name="nonce" onchange="switchMode(NonceFile, NonceText)">File
+    </label>
+    <br>
+    <textarea id="NonceText">passwordsalt</textarea>
+    <input type="file" id="NonceFile" hidden>
+    <p id="NonceNote" hidden>Invalid input</p>
+    <br>
+
+    <h3>Secret</h3>
+    <label>
+        <input type="radio" name="secret" onchange="switchMode(SecretText, SecretFile)" checked>Text
+    </label>
+    <label>
+        <input type="radio" name="secret" onchange="switchMode(SecretFile, SecretText)">File
+    </label>
+    <br>
+    <textarea id="SecretText"></textarea>
+    <input type="file" id="SecretFile" hidden>
+    <p id="SecretNote" hidden>Invalid input</p>
+    <br>
+
+    <h3>Associated Data</h3>
+    <label>
+        <input type="radio" onchange="switchMode(DataText, DataFile)" checked>Text
+    </label>
+    <label>
+        <input type="radio" onchange="switchMode(DataFile, DataText)">File
+    </label>
+    <br>
+    <textarea id="DataText"></textarea>
+    <input type="file" id="DataFile" hidden>
+    <p id="DataNote" hidden>Invalid input</p>
+    <br>
+
+    <h3>Encoding Character Set</h3>
+    <label>
+        <input type="radio" name="set" onchange="preset(0)" checked>Numbers
+    </label>
+    <label>
+        <input type="radio" name="set" onchange="preset(1)">Hexadecimal
+    </label>
+    <label>
+        <input type="radio" name="set" onchange="preset(2)">Letters
+    </label>
+    <label>
+        <input type="radio" name="set" onchange="preset(3)">Base32
+    </label>
+    <label>
+        <input type="radio" name="set" onchange="preset(4)">Base64
+    </label>
+    <label>
+        <input type="radio" name="set" onchange="preset(5)">Base64URL
+    </label>
+    <label>
+        <input type="radio" name="set" onchange="preset(6)" checked>Base94
+    </label>
+    <label>
+        <input type="radio" name="set" onchange="switchMode(SetFile, SetText)">File
+    </label>
+
+    <br>
+    <textarea id="SetText"></textarea>
+    <input type="file" id="SetFile" hidden>
+    <p id="SetNote" hidden>Invalid input</p>
+    <br>
+
+    <h3>Tag length</h3>
+    <input type="text" id="TagLength" value="32">
+    <p id="TagNote" hidden>Invalid input</p>
+    <br>
+
+    <h3>Iterations</h3>
+    <input type="text" id="Iteration" value="3">
+    <p id="IterationNote" hidden>Invalid input</p>
+    <br>
+
+    <h3>Parallelism</h3>
+    <input type="text" id="Parallel" value="1">
+    <p id="ParallelNote" hidden>Invalid input</p>
+    <br>
+
+    <h3>Memory</h3>
+    <input type="text" id="Memory" value="4096">
+    <p id="MemoryNote" hidden>Invalid input</p>
+    <br>
+
+    <h3>Max Output Length</h3>
+    <input type="text" id="OutLen">
+    <br>
+    <br>
+
+    <script type="text/javascript" src="argonweb.js"></script>
+    <script>
+        "use strict";
+        const long_answer = [[MessageText, MessageFile, MessageNote, 0, 4294967295],
+        [NonceText, NonceFile, NonceNote, 8, 4294967295],
+        [SecretText, SecretFile, SecretNote, 0, 4294967295],
+        [DataText, DataFile, DataNote, 0, 4294967295],
+        [SetText, SetFile, SetNote, 3, 18446744073709551615]];
+
+        const short_answer = [[TagLength, TagNote, 4, 4294967295],
+        [Iteration, IterationNote, 1, 4294967295],
+        [Parallel, ParallelNote, 1, 16777215],
+        [Memory, MemoryNote, 0, 4294967295]];
+
+        const pre_sets = [
+            '0\n1\n2\n3\n4\n5\n6\n7\n8\n9',
+            '0\n1\n2\n3\n4\n5\n6\n7\n8\n9\na\nb\nc\nd\ne\nf',
+            'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ',
+            'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\n2\n3\n4\n5\n6\n7',
+            'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\na\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nr\ns\nt\nu\nv\nw\nx\ny\nz\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n+\n/',
+            'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\na\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nr\ns\nt\nu\nv\nw\nx\ny\nz\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n-\n_',
+            '!\n"\n#\n$\n%\n&\n\'\n(\n)\n*\n+\n,\n-\n.\n/\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n:\n;\n<\n=\n>\n?\n@\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\n[\n\\\n]\n^\n_\n`\na\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nr\ns\nt\nu\nv\nw\nx\ny\nz\n{\n|\n}\n~'
+        ]
+
+        const hash = Module.cwrap('hash', 'string',
+            ['array', 'number', 'array', 'number', 'array', 'number', 'array', 'number', 'array', 'number', 'number', 'number', 'number', 'number']);
+
+        SetText.value = pre_sets[6];
+
+        function switchMode(show, hide) {
+            hide.hidden = true;
+            show.hidden = false;
+        }
+
+        function preset(index) {
+            switchMode(SetText, SetFile);
+            SetText.value = pre_sets[index];
+        }
+
+        function do_hash(args) {
+            const out = hash(...args);
+            const parts = out.split('\n');
+            if (parts.length > 1) {
+                SetNote.textContent = parts[0];
+                SetNote.style.color = "#0f0";
+                SetNote.hidden = false;
+                error.style.color = "#0f0";
+                error.textContent = "Success!";
+                const out_len = Number(OutLen.value);
+                if (out_len > 0) {
+                    result.value = parts[1].slice(0, out_len);
+                } else {
+                    result.value = parts[1];
+                }
+                resulth.hidden = false;
+                result.hidden = false;
+            } else {
+                error.style.color = "#f00";
+                error.textContent = out;
+                resulth.hidden = true;
+                result.hidden = true;
+            }
+        }
+
+        async function submit() {
+            const args = new Array(14);
+            var check = true;
+            var index = 0;
+
+            for (const item of long_answer) {
+                if (item[0].hidden) {
+                    if (item[1].files.length === 0) {
+                        if (item[3] == 0) {
+                            item[2].hidden = true;
+                            if (check) {
+                                args[index++] = new Uint8Array();
+                                args[index++] = 0;
+                            }
+                        } else {
+                            item[2].hidden = false;
+                            check = false;
+                        }
+                    } else {
+                        const out = await item[1].files[0].slice(0, item[4]).bytes();
+                        const len = out.byteLength;
+                        if (len >= item[3]) {
+                            item[2].hidden = true;
+                            if (check) {
+                                args[index++] = out;
+                                args[index++] = len;
+                            }
+                        } else {
+                            item[2].hidden = false;
+                            check = false;
+                        }
+                    }
+                } else {
+                    const out = new TextEncoder().encode(item[0].value);
+                    const len = out.byteLength;
+                    if (len >= item[3] && len <= item[4]) {
+                        item[2].hidden = true;
+                        if (check) {
+                            args[index++] = out;
+                            args[index++] = len;
+                        }
+                    } else {
+                        item[2].hidden = false;
+                        check = false;
+                    }
+                }
+            }
+
+            var memory_min = 0;
+            for (const item of short_answer) {
+                const out = Number(item[0].value);
+                if (item[0] == Parallel)
+                    memory_min = 8 * out;
+                else if (item[0] == Memory)
+                    item[2] = memory_min;
+
+                if (out >= item[2] && out <= item[3]) {
+                    item[1].hidden = true;
+                    if (check)
+                        args[index++] = out;
+                } else {
+                    item[1].hidden = false;
+                    check = false;
+                }
+            }
+
+            SetNote.style.color = "#f00";
+            SetNote.textContent = "Invalid input";
+
+            if (!check) {
+                error.style.color = "#f00";
+                error.textContent = "Invalid inputs";
+                resulth.hidden = true;
+                result.hidden = true;
+                return;
+            }
+            error.style.color = "#000";
+            error.textContent = "Hashing...";
+            setTimeout(do_hash, 0, args);
+            return;
+        }
+    </script>
+
+    <button onclick="submit()">Submit</button>
+    <p id="error"></p>
+    <br>
+
+    <h3 id="resulth" hidden>Result</h3>
+    <textarea id="result" hidden></textarea>
+
+</body>
+
+</html>
