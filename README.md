@@ -4,6 +4,12 @@ A program to hash files using Argon2 and encode in a base of user's choice
 # Motivation
 Suppose you have a system of generating easy-to-remember passwords, like e.g. the password is "ilove\<domainname>", so a password for google.com is "ilovegoogle.com". If someone manages to get access to just 1 or 2 of those, they can identify a pattern, and your entire password system becomes compromised. Or maybe you want to use an amazing video you made as a password, but the website does not accept it. This is where this program comes in. Argon2 is the winner of the Password Hashing Competition, and is designed to be essentially irreversible and VERY expensive to brute-force. With some strong settings, even simple passwords can be transformed into something that takes billions of years to brute-force with all the computing power that has ever existed in the world. This means even if they got all of your passwords, they will never figure out your system.
 
+# Web version
+There is now a web version [here](https://anonymous1212144.github.io/ArgonHash/). It have some difference with the executable. Here are some notes:
+- Parallelism does not work in most browsers
+- You cannot upload large files, also trying to generate multiple in one go also throws memory error
+- There is a "maximum output length" field which if you enter any number >0 it will only output that many characters in the "results" box
+
 # Usage instructions
 Place the executable in the same folder as all the files you want to input (e.g. `message.txt`), and double-click it. Press Enter to accept defaults. If an error occurs, press Enter to exit.
 
@@ -26,6 +32,6 @@ Place the executable in the same folder as all the files you want to input (e.g.
 - "Output file" is the file where the output is written. The default file is `output.txt`
 
 # Compilation instructions
-Download the official Argon2 source https://github.com/P-H-C/phc-winner-argon2 and put `argonhash.c` into the root folder (i.e. inside the same folder that contains the folder "src"), and then run something like this:
+Download the official [Argon2 source](https://github.com/P-H-C/phc-winner-argon2) and put `argonhash.c` into the root folder (i.e. inside the same folder that contains the folder "src"), and then run something like this:
 
 `cl /MT /O2 /I ./include argonhash.c src/core.c src/encoding.c src/argon2.c src/blake2/blake2b.c src/thread.c src/opt.c`
