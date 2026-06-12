@@ -30,7 +30,7 @@
 <body>
     <h1><a href="https://github.com/Anonymous1212144/ArgonHash" target="_blank">Argonhash</a> Web</h1>
 
-    <h3 title="hello world">Message</h3>
+    <h3>Message</h3>
     <label>
         <input type="radio" name="message" onchange="switchMode(MessageText, MessageFile)" checked>Text
     </label>
@@ -71,10 +71,10 @@
 
     <h3>Associated Data</h3>
     <label>
-        <input type="radio" onchange="switchMode(DataText, DataFile)" checked>Text
+        <input type="radio" name="data" onchange="switchMode(DataText, DataFile)" checked>Text
     </label>
     <label>
-        <input type="radio" onchange="switchMode(DataFile, DataText)">File
+        <input type="radio" name="data" onchange="switchMode(DataFile, DataText)">File
     </label>
     <br>
     <textarea id="DataText"></textarea>
@@ -138,6 +138,11 @@
     <input type="text" id="OutLen">
     <br>
     <br>
+    <label>
+        <input id="hide" type="checkbox">Keep Hidden
+    </label>
+    <br>
+    <br>
 
     <script type="text/javascript" src="argonweb.js"></script>
     <script>
@@ -178,6 +183,11 @@
             SetText.value = pre_sets[index];
         }
 
+        async function clip() {
+            await navigator.clipboard.writeText(result.value);
+            resultcr.hidden = false;
+        }
+
         function do_hash(args) {
             var out;
             try {
@@ -198,17 +208,24 @@
                 } else {
                     result.value = parts[1];
                 }
-                resulth.hidden = false;
-                result.hidden = false;
+                if (!hide.checked) {
+                    resulth.hidden = false;
+                    result.hidden = false;
+                }
+                resultc.hidden = false;
             } else {
                 error.style.color = "#f00";
                 error.textContent = out;
-                resulth.hidden = true;
-                result.hidden = true;
             }
         }
 
         async function submit() {
+            SetNote.hidden = true;
+            resulth.hidden = true;
+            result.hidden = true;
+            resultc.hidden = true;
+            resultcr.hidden = true;
+            
             const args = new Array(14);
             var check = true;
             var index = 0;
@@ -296,6 +313,8 @@
     <br>
 
     <h3 id="resulth" hidden>Result</h3>
-    <textarea id="result" hidden></textarea>
+    <textarea id="result" hidden readonly></textarea>
+    <button id="resultc" onclick="clip()" hidden>Copy</button>
+    <p id="resultcr" hidden>Copied!</p>
 </body>
 </html>
